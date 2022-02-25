@@ -109,6 +109,7 @@ def userProfile(request, id):
 @login_required(login_url='login')
 def createRoom(request):
     form = RoomForm()
+    topics = Topic.objects.all()
     if request.method == 'POST':
         print(request.POST)
         form = RoomForm(request.POST)
@@ -119,7 +120,7 @@ def createRoom(request):
 
             return redirect('home')
 
-    context = {'form': form}
+    context = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', context)
 
 
@@ -127,11 +128,12 @@ def createRoom(request):
 def updateRoom(request, id):
     room = Room.objects.get(id=id)
     form = RoomForm(instance=room)
+    topics = Topic.objects.all()
 
     if request.user != room.host:
         return HttpResponse('You are not allowed here!!')
 
-    context = {'form': form}
+    context = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', context)
 
 
